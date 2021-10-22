@@ -6,7 +6,7 @@
   "scripts": {
     "build": "rm -rf dist && tsc",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "node dist/main",
+    "start": "node dist/index",
     "start:dev": "ts-node-script -r dotenv/config src/index.ts dotenv_config_path=.env"
   },
   "author": "Paintxd",
