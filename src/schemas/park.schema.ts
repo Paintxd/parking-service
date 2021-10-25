@@ -7,6 +7,7 @@ export interface Park extends Document {
   parkStartTime: Date;
   parkEndTime: Date;
   notified: boolean;
+  refoundValue: number;
 }
 
 const schema = new Schema<Park, Model<Park>, Park>({
@@ -33,6 +34,10 @@ const schema = new Schema<Park, Model<Park>, Park>({
   notified: {
     type: Boolean,
     default: false,
+  },
+  refoundValue: {
+    type: Number,
+    default: 0.0,
   },
 });
 
