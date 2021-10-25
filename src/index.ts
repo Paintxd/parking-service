@@ -1,14 +1,6 @@
 import ampq from 'amqplib';
 import MongoConnection from './mongo-connection';
-import { addTime } from './queues/addTime';
-import { removeVehicle } from './queues/removeVehicle';
-import { requestParking } from './queues/requestParking';
-
-const queues = [
-  { processor: requestParking, name: 'REQUEST_PARKING' },
-  { processor: addTime, name: 'ADD_TIME' },
-  { processor: removeVehicle, name: 'REMOVE_VEHICLE' },
-];
+import { queues } from './queues/queues';
 
 (async () => {
   const exchange = process.env.EXCHANGE_NAME;

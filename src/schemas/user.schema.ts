@@ -1,6 +1,6 @@
 import { Document, Model, model, Schema } from 'mongoose';
-import { CreditCard } from 'src/interfaces/card';
-import { Vehicle } from 'src/interfaces/vehicle';
+import { CreditCard } from '../interfaces/card';
+import { Vehicle } from '../interfaces/vehicle';
 
 export interface User extends Document {
   name: string;

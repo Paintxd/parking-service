@@ -1,12 +1,11 @@
 import { ConsumeMessage } from 'amqplib';
 import { add } from 'date-fns';
-import { utcToZonedTime } from 'date-fns-tz';
 import { RequestParking } from '../interfaces/request-parking';
 import { ParkModel } from '../schemas/park.schema';
 import { UserModel } from '../schemas/user.schema';
 
-export const requestParking = async (msg: ConsumeMessage) => {
-  console.log(`REQUEST_PARKING -- Message received msg: ${msg.content.toString()}`);
+export const processor = async (msg: ConsumeMessage) => {
+  console.log(`REQUEST_PARKING -- Message received msg: ${msg.content.toString()}\n`);
   const {
     chargedAmount,
     parkedTime,
@@ -15,7 +14,7 @@ export const requestParking = async (msg: ConsumeMessage) => {
     vehicleLicensePlate,
   } = JSON.parse(msg.content.toString()) as RequestParking;
 
-  const parkStartTime = utcToZonedTime(new Date(Date.now()), 'America/Sao_Paulo');
+  const parkStartTime = new Date(Date.now());
   const parkEndTime = add(parkStartTime, { minutes: parkedTime });
 
   const user = await UserModel.findOne({ cpf: vehicleOwnerDocument });
@@ -32,3 +31,15 @@ export const requestParking = async (msg: ConsumeMessage) => {
     }),
   ]);
 };
+
+export const requestParking = { processor, name: 'REQUEST_PARKING' };
+
+/*
+{
+  "vehicleLicensePlate": "ADE145C",
+  "vehicleOwnerPhoneNumber": "49999653083",
+  "vehicleOwnerDocument": "15935888291",
+  "parkedTime": 30,
+  "chargedAmount": 0.6
+}
+*/
