@@ -1,4 +1,4 @@
-import { Document, model, Schema } from 'mongoose';
+import { Document, Model, model, Schema } from 'mongoose';
 import { CreditCard } from 'src/interfaces/card';
 import { Vehicle } from 'src/interfaces/vehicle';
 
@@ -12,9 +12,10 @@ export interface User extends Document {
   currency: number;
   vehicles: Vehicle[];
   cards: CreditCard[];
+  pay(price: number): void;
 }
 
-const schema = new Schema({
+const schema = new Schema<User, Model<User>, User>({
   name: {
     type: String,
     required: true,
@@ -60,5 +61,9 @@ const schema = new Schema({
     }),
   ],
 });
+
+schema.methods.pay = function (price: number): void {
+  this.currency = Number.parseFloat((this.currency - price).toFixed(2));
+};
 
 export const UserModel = model<User>('User', schema);

@@ -1,6 +1,14 @@
 import ampq from 'amqplib';
-import { MongoConnection } from './mongo-connection';
-import { UserModel } from './schemas/user.schema';
+import MongoConnection from './mongo-connection';
+import { addTime } from './queues/addTime';
+import { removeVehicle } from './queues/removeVehicle';
+import { requestParking } from './queues/requestParking';
+
+const queues = [
+  { processor: requestParking, name: 'REQUEST_PARKING' },
+  { processor: addTime, name: 'ADD_TIME' },
+  { processor: removeVehicle, name: 'REMOVE_VEHICLE' },
+];
 
 (async () => {
   const exchange = process.env.EXCHANGE_NAME;
@@ -15,12 +23,9 @@ import { UserModel } from './schemas/user.schema';
 
   console.log('-> Connected waiting for messages\n');
 
-  channel.consume('REQUEST_PARKING', async msg => {
-    console.log(`-- Message received msg: ${msg.content.toString()}`);
-    const { name } = JSON.parse(msg.content.toString());
-    const user = await UserModel.findOne({ name }).lean();
-    console.log(user);
-  }, {
-    noAck: true,
-  });
+  queues.forEach((queue) =>
+    channel.consume(queue.name, (msg) => queue.processor(msg), {
+      noAck: true,
+    }),
+  );
 })();
