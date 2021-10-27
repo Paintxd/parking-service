@@ -1,4 +1,6 @@
+import { differenceInMinutes } from 'date-fns';
 import { AsyncTask, SimpleIntervalJob, ToadScheduler } from 'toad-scheduler';
+import { ParkModel } from './schemas/park.schema';
 
 export default class Scheduler {
   private scheduler: ToadScheduler;
@@ -11,7 +13,17 @@ export default class Scheduler {
     const task = new AsyncTask(
       'SMS sender task',
       () => {
-        return Promise.resolve(console.log('testando 123'));
+        return ParkModel.find({ notified: false })
+          .exec()
+          .then((parks) => {
+            const notifyClients = parks.filter((park) => {
+              const minsDiff = differenceInMinutes(park.parkEndTime, new Date(Date.now()));
+
+              return minsDiff < 5 && minsDiff > 0;
+            });
+
+            console.log(notifyClients);
+          });
       },
       (err: Error) => console.log(`SMS task error: ${err}`),
     );

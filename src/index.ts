@@ -4,14 +4,12 @@ import { queues } from './queues/queues';
 import Scheduler from './scheduler';
 
 (async () => {
-  const exchange = process.env.EXCHANGE_NAME;
-
   await MongoConnection.start();
   new Scheduler();
   const conection = await ampq.connect(process.env.BROKER_URL);
   const channel = await conection.createChannel();
 
-  channel.assertExchange(exchange, 'direct', {
+  channel.assertExchange(process.env.EXCHANGE_NAME, 'direct', {
     durable: true,
   });
 
