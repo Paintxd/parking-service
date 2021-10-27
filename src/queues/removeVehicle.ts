@@ -13,12 +13,10 @@ export const processor = async (msg: ConsumeMessage) => {
   const now = new Date(Date.now());
   const refoundValue = Number((differenceInMinutes(park.parkEndTime, now) * 0.2).toFixed(2));
 
-  park.notified = true;
-  park.parkEndTime = now;
-  park.refoundValue = refoundValue;
+  park.unpark(now, refoundValue);
 
   const user = await UserModel.findOne({ cpf: park.vehicleOwnerDocument });
-  user.currency += refoundValue;
+  user.refound(refoundValue);
 
   await Promise.all([park.save(), user.save()]);
 };

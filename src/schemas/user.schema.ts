@@ -13,6 +13,7 @@ export interface User extends Document {
   vehicles: Vehicle[];
   cards: CreditCard[];
   pay(price: number): void;
+  refound(value: number): void;
 }
 
 const schema = new Schema<User, Model<User>, User>({
@@ -64,6 +65,10 @@ const schema = new Schema<User, Model<User>, User>({
 
 schema.methods.pay = function (price: number): void {
   this.currency = Number.parseFloat((this.currency - price).toFixed(2));
+};
+
+schema.methods.refound = function (value: number): void {
+  this.currency += value;
 };
 
 export const UserModel = model<User>('User', schema);

@@ -8,6 +8,7 @@ export interface Park extends Document {
   parkEndTime: Date;
   notified: boolean;
   refoundValue: number;
+  unpark(time: Date, refoundValue: number): void;
 }
 
 const schema = new Schema<Park, Model<Park>, Park>({
@@ -40,5 +41,11 @@ const schema = new Schema<Park, Model<Park>, Park>({
     default: 0.0,
   },
 });
+
+schema.methods.unpark = function (time: Date, refoundValue: number): void {
+  this.notified = true;
+  this.parkEndTime = time;
+  this.refoundValue = refoundValue;
+};
 
 export const ParkModel = model<Park>('Park', schema);
