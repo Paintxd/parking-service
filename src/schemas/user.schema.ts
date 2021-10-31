@@ -11,7 +11,6 @@ export interface User extends Document {
   phoneNumber: string;
   currency: number;
   vehicles: Vehicle[];
-  cards: CreditCard[];
   pay(price: number): void;
   refound(value: number): void;
 }
@@ -53,12 +52,6 @@ const schema = new Schema<User, Model<User>, User>({
       description: { type: String },
       type: { type: String },
       licensePlate: { type: String },
-    }),
-  ],
-  cards: [
-    new Schema({
-      creditCardNumber: { type: String },
-      creditCardExpiration: { type: String },
     }),
   ],
 });
