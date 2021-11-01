@@ -11,7 +11,7 @@ export const processor = async (msg: ConsumeMessage) => {
   const park = await ParkModel.findById(parkId);
 
   const now = new Date(Date.now());
-  const refoundValue = Number((differenceInMinutes(park.parkEndTime, now) * 0.2).toFixed(2));
+  const refoundValue = Number((differenceInMinutes(park.parkEndTime, now) * 0.02).toFixed(2));
 
   park.unpark(now, refoundValue);
 
