@@ -26,14 +26,22 @@ export default class Scheduler {
                 return minsDiff < 5 && minsDiff > 0;
               })
               .map((park) => {
-                client.messages
-                  .create({
-                    from: 'Estacionadinha',
-                    body: 'Olá, faltam 5 minutos para acabar seu tempo de estacionamento, caso for permanecer por mais tempo, lembre-se de renovar para evitar multas',
-                    messagingServiceSid: process.env.TWILIO_MESSAGING_SERVICEID,
-                    to: park.vehicleOwnerPhoneNumber,
-                  })
-                  .then((message) => console.log(message.body));
+                try {
+                  client.messages
+                    .create({
+                      body: 'Olá, faltam 5 minutos para acabar seu tempo de estacionamento, caso for permanecer por mais tempo, lembre-se de renovar para evitar multas',
+                      messagingServiceSid: process.env.TWILIO_MESSAGING_SERVICEID,
+                      to: `+55${park.vehicleOwnerPhoneNumber}`,
+                    })
+                    .then((_) => {
+                      park.notified = true;
+                      park.save();
+                      return `Notification sent - Owner phone: ${park.vehicleOwnerPhoneNumber}`;
+                    });
+                } catch (err) {
+                  console.log(err);
+                  return `Error message - Owner phone: ${park.vehicleOwnerPhoneNumber}`;
+                }
               });
 
             console.log(notifyClients);
